@@ -27,10 +27,6 @@ is a good idea or not)
 
 ### Vault
 
-As of June 2015, upstream 'master' doesn't install with `npm install`
-because it is missing dependencies.  According to `git bisect` this is
-the latest available version that does
-
 I started by running 
 
 ```

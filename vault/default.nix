@@ -19,8 +19,8 @@ in nodePackages.buildNodePackage rec {
    gitdir = pkgs.fetchFromGitHub {
      owner = "jcoglan";
      repo = "vault";
-     rev = "f6913eb5a79b44343e8a1c364f10c140bcd7e1bd";
-     sha256 = "1z3mxbbn6grr4qpmpzzmwbqwx9p3a7g857v2mi8j767d1p27678r";
+     rev = "0.3.0";
+     sha256 = "1ffm90ygfqqxh4d5xcbwqvn7ycs5dbn9f3211if3rwd92jm0z99x";
    };
 
    name = "vault-0.3.0";
