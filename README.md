@@ -11,21 +11,17 @@ I don't want to maintain a local fork of the nixpkgs repo with my
 personal packages, at least unless and until I think it's worth trying
 to get them merged.
 
-What I did instead is put this in my `.nixpkgs/config.nix`.
-`packageOverrides` is (as far as I can work out) a function that
-should accept a set of packages and return another set of packages:
-nixpkgs calls it with the set of all available packages and merges
-whatever it returns onto the same set.
+Instead I use `packageOverrides`.  `packageOverrides` is (as far as I
+can work out) a function that should accept a set of packages and
+return another set of packages: nixpkgs calls it with the set of all
+available packages and merges whatever it returns onto the same set.
 
+There is a `config.nix` file in this repo.  If you already have a
+`$HOME/.nixpkgs/config.nix` then merge the contents of this one with
+that one.  If not, symlink - or even, check this repo out as
+$HOME/.nixpkgs (I don't have enough experience with Nix to say if this
+is a good idea or not)
 
-```
-{
-  packageOverrides = pkgs: {
-    vault = pkgs.callPackage /Users/dbarlow/nix-local/vault {};
-    # repeat for each package herein
-  };
-}
-```
 
 ## Implementation notes
 
