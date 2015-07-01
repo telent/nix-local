@@ -8,8 +8,7 @@
     # 
     #   nix-shell '<nixpkgs>' -A ruby22env
 
-    rubyenv = rel: 
-      pkgs.stdenv.mkDerivation rec {
+    rubyenv = rel: rec {
         # We set BUNDLE_PATH for the benefit of interactive ruby
         # sessions started by nix-shell.  If we were building actual
         # packages using this derivation, $HOME would not exist and
@@ -27,14 +26,24 @@
           pkgs.libxml2 pkgs.libiconv ];
       };
 
-    ruby22env = rubyenv "2_2";
-    ruby20env = rubyenv "2_0";
+    ruby22env = pkgs.stdenv.mkDerivation rubyenv "2_2";
+    ruby20env = pkgs.stdenv.mkDerivation rubyenv "2_0";
 
     # libusb depends on a horrible set of linux-only crap that ends up
     # with systemd
     gnupg_nousb = (pkgs.gnupg.override { libusb = null; x11Support = false; });
     gnupg = gnupg_nousb;
 
+    # this likewise is only for nix-shell
+    geppetto_d = let r = (rubyenv "2_2") ; in r // {
+      name = "geppetto" ;
+      version = "0.0.1";
+      src = "./.";
+      buildInputs = [ blackbox ] ++ [ r.buildInputs ];
+    };
+    geppetto = pkgs.stdenv.mkDerivation geppetto_d;
+
+    # $JOB uses bundler 1.10 which is not yet in nixpkgs
     bundler_1_10 = pkgs.buildRubyGem {
       name = "bundler-1-10";
       src = pkgs.fetchgit {
