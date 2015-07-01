@@ -1,6 +1,6 @@
 {
-  packageOverrides = pkgs: {
+  packageOverrides = pkgs: rec {
     vault = pkgs.callPackage ./vault {};
-    # repeat for each package herein
+    blackbox = pkgs.callPackage ./blackbox {};
   };
 }
