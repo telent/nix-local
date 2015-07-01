@@ -43,3 +43,8 @@ but the generated default.nix seems to need significant manual editing:
 deps = (filter (v: nixType v == "derivation") (attrValues nodePackages))
 ```
 
+### Blackbox
+
+Blackbox currently requires that GnuPG is on the search path and can
+be invoked as `gpg`.  This is a packaging failure which I will fix as
+soon as I figure out how to.
