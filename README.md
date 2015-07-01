@@ -4,6 +4,7 @@
 
 * vault: " Generates safe passwords so you never need to remember them
 " from https://github.com/jcoglan/vault
+* blackbox: "Safely store secrets in Git/Mercurial/Subversion" from https://github.com/StackExchange/blackbox
 
 ## Installation
 
@@ -18,9 +19,8 @@ available packages and merges whatever it returns onto the same set.
 
 There is a `config.nix` file in this repo.  If you already have a
 `$HOME/.nixpkgs/config.nix` then merge the contents of this one with
-that one.  If not, symlink - or even, check this repo out as
-$HOME/.nixpkgs (I don't have enough experience with Nix to say if this
-is a good idea or not)
+that one.  If not, you can tell Nix to use this one by setting
+`$NIXPKGS_CONFIG` to point to it.
 
 
 ## Implementation notes
