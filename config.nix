@@ -32,7 +32,8 @@
 
     # libusb depends on a horrible set of linux-only crap that ends up
     # with systemd
-    gnupg = (pkgs.gnupg.override { libusb = null; });
+    gnupg_nousb = (pkgs.gnupg.override { libusb = null; x11Support = false; });
+    gnupg = gnupg_nousb;
 
     bundler_1_10 = pkgs.buildRubyGem {
       name = "bundler-1-10";

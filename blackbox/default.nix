@@ -12,7 +12,10 @@ stdenv.mkDerivation rec {
     sha256 = "18jd9dfcjw836g38rj9bb1pcn738ar27j1k7ywgvakxi7d8na3zz";
   };
   src = [ gitdir ];
-  phases = [ "unpackPhase" "installPhase" ];
+  buildInputs = [ pkgs.gnupg_nousb ];
+  patchPhase = ''
+    sed -i 's@GPG:=gpg@GPG:=${pkgs.gnupg_nousb}/bin/gpg2@' bin/_blackbox_common.sh
+  '';
   installPhase = ''
     mkdir -p $out/bin
     cp bin/* $out/bin
