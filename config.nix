@@ -23,11 +23,11 @@
         src = ./.;
         buildInputs = [ 
           pkgs.git pkgs."ruby_${rel}" bundler_1_10 
-          pkgs.libxml2 pkgs.libiconv ];
+          pkgs.libxml2 pkgs.libiconv  ];
       };
 
-    ruby22env = pkgs.stdenv.mkDerivation rubyenv "2_2";
-    ruby20env = pkgs.stdenv.mkDerivation rubyenv "2_0";
+    ruby22env = pkgs.stdenv.mkDerivation (rubyenv "2_2");
+    ruby20env = pkgs.stdenv.mkDerivation (rubyenv "2_0");
 
     # libusb depends on a horrible set of linux-only crap that ends up
     # with systemd
@@ -35,13 +35,13 @@
     gnupg = gnupg_nousb;
 
     # this likewise is only for nix-shell
-    geppetto_d = let r = (rubyenv "2_2") ; in r // {
-      name = "geppetto" ;
-      version = "0.0.1";
-      src = "./.";
-      buildInputs = [ blackbox ] ++ [ r.buildInputs ];
-    };
-    geppetto = pkgs.stdenv.mkDerivation geppetto_d;
+    iodide = pkgs.stdenv.mkDerivation 
+      (let r = (rubyenv "2_2") ; in r // {
+        name = "iodide" ;
+        version = "0.0.1";
+        src = "./.";
+        buildInputs = [ pkgs.curl blackbox hiera ] ++ [ r.buildInputs ];
+      });
 
     # $JOB uses bundler 1.10 which is not yet in nixpkgs
     bundler_1_10 = pkgs.buildRubyGem {
@@ -59,6 +59,17 @@
 	     --replace "/usr/bin/env" "${pkgs.coreutils}/bin/env"
 	done
       '';
+    };
+
+    json_gem = pkgs.buildRubyGem {
+      name = "json_pure-1.8.2";
+      version = "1.8.2";
+      sha256 = "1vjm8fqbs06i3klsqdim9jp52mmwc4dm33dc8ajdci9hp2dngl4a";
+    };
+    hiera = pkgs.buildRubyGem {
+      name = "hiera-3.0.1";
+      sha256 = "1k2ajl0hd2iryikhc6yb84fhfksjn73p0paabmx0q862kwgqy34f";
+      buildInputs = [ json_gem ];
     };
   };
 }
