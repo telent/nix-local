@@ -1,4 +1,7 @@
 {
+  git = {
+    svnSupport = true;
+  };
   packageOverrides = pkgs: rec {
     vault = pkgs.callPackage ./vault {};
     blackbox = pkgs.callPackage ./blackbox {};
@@ -39,7 +42,7 @@
 
     # this likewise is only for nix-shell
     iodide = pkgs.stdenv.mkDerivation 
-      (let r = (rubyenv "2_2") ; in r // {
+      (let r = (rubyenv { rel = "2_2"; }) ; in r // rec {
         name = "iodide" ;
         version = "0.0.1";
         src = "./.";
