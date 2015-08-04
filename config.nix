@@ -48,7 +48,41 @@
         src = "./.";
         buildInputs = [ pkgs.curl blackbox hiera ] ++ [ r.buildInputs ];
       });
+    
+    cmm = pkgs.stdenv.mkDerivation 
+      (let r = (rubyenv { rel = "2_0";}) ; in r // rec {
+        name = "cmm" ;
+        version = "0.0.1";
+        src = "./.";
+        buildInputs = [ pkgs.mongodb pkgs.postgresql94 pkgs.libiconv 
+	                pkgs.libxslt pkgs.freetds ] ++
+		      [ r.buildInputs ];
+  	preBuild = with pkgs; ''
+	  bundle config --local build.nokogiri  --with-xml2-include=${libxml2}/include/libxml2 --use-system-libraries --with-xml2-config=${libxml2}/bin/xml2-config --with-xslt-config=${libxslt}/bin/xslt-config	  
+	'';
+	PGPORT = 5440;
+	shellHook = ''
+	  export CALL_ME_MAYBE_POSTGRES_PORT=$PGPORT
+	  startServers() {
+    	    echo starting postgres and mongo
+	    test -d $HOME/var/pgsql || initdb -A trust -D $HOME/var/pgsql
+	    pg_ctl  -o "-F -p $PGPORT"  -D $HOME/var/pgsql -l postgres.log start
+	    while ! pg_ctl -o "-F -p $PGPORT"  -D $HOME/var/pgsql  status ;do
+	      echo -n "waiting for pgsql to start: "
+	      sleep 1
+	    done
+	    createuser -s $USER -p $PGPORT
+	    mkdir -p $HOME/var/mongodb
+	    mongod --noauth --dbpath $HOME/var/mongodb --logpath mongo.log --fork --pidfilepath $HOME/var/mongodb/mongod.pid
+	  }
+	  stopServers() {
+	    kill `cat $HOME/var/mongodb/mongod.pid`
+ 	    pg_ctl -D $HOME/var/pgsql -l postgres.log stop
+	  }
 
+	'';
+      });
+      
     # $JOB uses bundler 1.10 which is not yet in nixpkgs
     bundler_1_10 = pkgs.buildRubyGem {
       name = "bundler-1-10";
