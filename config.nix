@@ -8,7 +8,7 @@
     # 
     #   nix-shell '<nixpkgs>' -A ruby22env
 
-    rubyenv = rel: rec {
+    rubyenv = attrs: rec {
         # We set BUNDLE_PATH for the benefit of interactive ruby
         # sessions started by nix-shell.  If we were building actual
         # packages using this derivation, $HOME would not exist and
@@ -16,18 +16,20 @@
         # "bundle install" directly would be contraindicated anyway as
         # nix should be doing dep management for nix packages, not
         # Ruby
+	rel = attrs.rel;
         name = "rubyenv-${rel}";
         version = rel;
 	CFLAGS = "-std=c99";
         BUNDLE_PATH = "${(builtins.getEnv ''HOME'')}/.bundle/${version}/";
         src = ./.;
-        buildInputs = [ 
-          pkgs.git pkgs."ruby_${rel}" bundler_1_10 
+        git = attrs.git ? pkgs.git;
+        buildInputs = attrs.buildInputs ++ [ 
+          git pkgs."ruby_${rel}" bundler_1_10 
           pkgs.libxml2 pkgs.libiconv  ];
       };
 
-    ruby22env = pkgs.stdenv.mkDerivation (rubyenv "2_2");
-    ruby20env = pkgs.stdenv.mkDerivation (rubyenv "2_0");
+    ruby22env = pkgs.stdenv.mkDerivation (rubyenv { rel = "2_2";});
+    ruby20env = pkgs.stdenv.mkDerivation (rubyenv { rel = "2_0";});
 
     # libusb depends on a horrible set of linux-only crap that ends up
     # with systemd
