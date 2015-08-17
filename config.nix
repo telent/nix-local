@@ -12,7 +12,9 @@
     # 
     #   nix-shell '<nixpkgs>' -A ruby22env
 
-    rubyenv = attrs: rec {
+    rubyenv = attrs: let
+      git = (if (builtins.hasAttr "git" attrs) then attrs.git else pkgs.gitMinimal);
+      defaults = rec {
         # We set BUNDLE_PATH for the benefit of interactive ruby
         # sessions started by nix-shell.  If we were building actual
         # packages using this derivation, $HOME would not exist and
@@ -25,12 +27,14 @@
         version = rel;
 	CFLAGS = "-std=c99";
         BUNDLE_PATH = "${(builtins.getEnv ''HOME'')}/.bundle/${version}/";
-        src = ./.;
-        git = attrs.git ? pkgs.git;
-        buildInputs = attrs.buildInputs ++ [ 
-          git pkgs."ruby_${rel}" bundler_1_10 
-          pkgs.libxml2 pkgs.libiconv  ];
+        BUNDLE_BUILD__NOKOGIRI = with pkgs; "--use-system-libraries --with-libxml-2.0-config=${libxml2}/bin/xml2-config --with-libxslt-config=${libxslt}/bin/xslt-config --with-xslt-dir=${libxslt} --with-xml2-dir=${libxml2} --with-xml2-include=${libxml2}/include/libxml2 ";
+	src = ./.;
       };
+      overrides = {
+        buildInputs = attrs.buildInputs ++ [ 
+          git pkgs."ruby_${attrs.rel}" bundler_1_10 
+          pkgs.libxml2 pkgs.libxslt pkgs.libiconv  ];
+      }; in (defaults // attrs // overrides);      
 
     ruby22env = pkgs.stdenv.mkDerivation (rubyenv { rel = "2_2";});
     ruby20env = pkgs.stdenv.mkDerivation (rubyenv { rel = "2_0";});
@@ -38,7 +42,6 @@
     # libusb depends on a horrible set of linux-only crap that ends up
     # with systemd
     gnupg_nousb = (pkgs.gnupg.override { libusb = null; x11Support = false; });
-    gnupg = gnupg_nousb;
 
     # this likewise is only for nix-shell
     iodide = pkgs.stdenv.mkDerivation 
@@ -89,7 +92,7 @@
       src = pkgs.fetchgit {
 	url = "https://github.com/bundler/bundler.git";
 	rev = "b5db5535355e37a9bc23b87acc602e0398b3ec3c";
-	sha256 = "0s4pvchx5sq6jzsfwdw9pl7vciy9lz5kfx5n9wdy0jq0rrwby4y0";
+	sha256 = "09x1rdxqhv5z0da3cwyn3cnzadi0y7d6708bylplvip22gd75g0c";
 	leaveDotGit = true;
       };
       dontPatchShebangs = true;
