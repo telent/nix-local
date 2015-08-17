@@ -6,6 +6,7 @@
     vault = pkgs.callPackage ./vault {};
     blackbox = pkgs.callPackage ./blackbox {};
     xdiskusage = pkgs.callPackage ./xdiskusage {};
+    flexisip = pkgs.callPackage ./flexisip {};
 
     # these are for hacking on unpackaged ruby projects, not for use
     # in package building.  e.g.
