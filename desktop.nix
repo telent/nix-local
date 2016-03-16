@@ -3,17 +3,42 @@
 #  https://raw.githubusercontent.com/telent/dotfiles/master/.gtkrc-2.0
 #  and .gitconfig would be nice too
 with import <nixpkgs> {};
-buildEnv {
-    name = "desktop";
-    paths = [ emacs
-	firefox xterm git vimNox cdrkit
-        unzip gnumake iftop wireshark tcpdump acpi
-	tmux
-        wayland weston
-        gimp manpages
-        jwhois
-        nmap
-        nodejs_vault
-	sawfish mupdf
-	file usbutils python binutils python27Packages.pip ] ;
+let linuxPaths = [
+    acpi
+    cdrkit
+    firefox
+    gimp
+    jwhois
+    mupdf
+    sawfish
+    tcpdump
+    usbutils
+    vimNox
+    wayland
+    weston
+    wireshark
+    xterm
+  ];
+  darwinPaths = [];
+  commonPaths = [
+    binutils
+    emacs
+    file
+    git
+    gnumake
+    iftop
+    manpages
+    nmap
+    nodejs_vault
+    python
+    python27Packages.pip
+    tmux
+    unzip
+  ];
+in buildEnv {
+  name = "desktop";
+  paths = commonPaths ++
+  (stdenv.lib.optionals stdenv.isDarwin darwinPaths) ++
+  (stdenv.lib.optionals stdenv.isLinux linuxPaths) ;
+
 }
