@@ -1,12 +1,22 @@
-# Local packages for Nix
+# Local config and packages for Nix
 
-## Contents
+Comprising
 
-* vault: " Generates safe passwords so you never need to remember them
-" from https://github.com/jcoglan/vault
-* blackbox: "Safely store secrets in Git/Mercurial/Subversion" from https://github.com/StackExchange/blackbox
+* My preferred packages for day-to-day operation on Linux (NixOS) and
+Darwin (vanilla nixpkgs installation)
 
-## Installation
+* Some derivations that aren't part of my user profile but that I use
+  a lot anyway
+
+## Quick start (clobbers any previously installed packages in the profile)
+
+```
+$ cd $HOME
+$ git clone git@github.com:telent/nix-local .nixpkgs
+$ nix-env -r -iA nixpkgs.desktop
+```
+
+## Background
 
 I don't want to maintain a local fork of the nixpkgs repo with my
 personal packages, at least unless and until I think it's worth trying
@@ -20,10 +30,11 @@ available packages and merges whatever it returns onto the same set.
 There is a `config.nix` file in this repo.  If you already have a
 `$HOME/.nixpkgs/config.nix` then merge the contents of this one with
 that one.  If not, you can tell Nix to use this one by setting
-`$NIXPKGS_CONFIG` to point to it.
+`$NIXPKGS_CONFIG` to point to it, or (may be easier) by creating a
+symlink from `$HOME/.nixpkgs` to this repo.
 
 
-## Implementation notes
+## Package notes
 
 ### Vault
 
