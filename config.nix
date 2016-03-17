@@ -49,6 +49,6 @@ commonPaths = [
     xdiskusage = pkgs.callPackage ./xdiskusage {};
     flexisip = pkgs.callPackage ./flexisip {};
     hitch = pkgs.callPackage ./hitch {};
-    tinyproxy = pkgs.callPackage ./tinyproxy {};	
+    tinyproxy = pkgs.callPackage ./tinyproxy {};
   };
 }
