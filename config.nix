@@ -50,5 +50,19 @@ commonPaths = [
     flexisip = pkgs.callPackage ./flexisip {};
     hitch = pkgs.callPackage ./hitch {};
     tinyproxy = pkgs.callPackage ./tinyproxy {};
+    jruby = lib.overrideDerivation pkgs.jruby (a: rec {
+       version = "1.7.23";
+       name = "jruby-${version}";
+       dontStrip = true;
+       src = pkgs.fetchurl {
+         url = "http://jruby.org.s3.amazonaws.com/downloads/${version}/jruby-bin-${version}.tar.gz";
+         sha1 = "23iii8vwszrjzgzq0amwyazdxrppjpib";
+       };
+       # make "ruby" run jruby
+       installPhase = ''
+         ${a.installPhase}
+         (cd $out/bin && ln -s jruby ruby)
+       '';
+    });
   };
 }
