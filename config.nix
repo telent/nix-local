@@ -6,10 +6,8 @@ let linuxPaths = [
   gimp
   jwhois
   mupdf
-  sawfish
   tcpdump
   usbutils
-  vimNox
   wayland
   weston
   wireshark
