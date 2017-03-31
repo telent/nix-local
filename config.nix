@@ -23,7 +23,6 @@ commonPaths = [
   iftop
   manpages
   nmap
-  nodejs_vault
   python
   python27Packages.pip
   tmux
