@@ -6,7 +6,7 @@ stdenv.mkDerivation {
   src = fetchgit {
     url = "git://git.code.sf.net/p/xdiskusage/git";
     rev = "2fa92f0544169fbf0173dfbfd519488a16b641af";
-    sha256 = "1rir6qs6qd79pvmjnwppspxa8mr78rpvv8l0qawxdkr8jaxl5mv2";
+    sha256 = "0ldqrcf250sncm6arilqf6170bqykqa1kqfd8f1wd4vxnnp29kxl";
   };
   preConfigure = ''
     autoconf

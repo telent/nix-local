@@ -1,55 +1,77 @@
 with import <nixpkgs> {};
 let linuxPaths = [
+#  xfce4_powerman
   acpi
   cdrkit
   firefox
   gimp
-  jwhois
+  mplayer
   mupdf
-  sawfish
   tcpdump
   usbutils
   vimNox
-  wayland
-  weston
+  xorg.xcursorthemes
   wireshark
   xterm
+  xorg.xwd
+  imagemagick
+  python27Packages.docker_compose
+  powertop
+  inkscape
+  xdiskusage
+  inetutils
 ];
 darwinPaths = [];
 commonPaths = [
+  nix-repl
+  git
+  bind
   binutils
   emacs
   file
-  git
   gnumake
+  gnupg
   iftop
+  jq
   manpages
+  mosh
   nmap
-  nodejs_vault
+  pass
   python
   python27Packages.pip
   tmux
+  units
   unzip
+  vlc
 ];
   in
 {
-  git = {
-    svnSupport = true;
-  };
+  # git = {
+  #   svnSupport = true;
+  # };
+
   packageOverrides = pkgs: rec {
     desktop = buildEnv {
       name = "desktop";
-      paths = with pkgs; [ nix cacert ] ++
+      paths = with pkgs; [ nix cacert  ] ++
       commonPaths ++
       (stdenv.lib.optionals stdenv.isDarwin darwinPaths) ++
       (stdenv.lib.optionals stdenv.isLinux linuxPaths) ;
     };
-    nodejs_vault = pkgs.callPackage ./vault {};
     blackbox = pkgs.callPackage ./blackbox {};
     xdiskusage = pkgs.callPackage ./xdiskusage {};
-    flexisip = pkgs.callPackage ./flexisip {};
-    hitch = pkgs.callPackage ./hitch {};
     tinyproxy = pkgs.callPackage ./tinyproxy {};
+
+    get_iplayer = lib.overrideDerivation pkgs.get_iplayer (a: rec {
+       version = "3.01";
+       src = fetchFromGitHub {
+         owner = "get-iplayer";
+         repo = "get_iplayer";
+         rev = "v${version}";
+         sha256 = "1g08amb08n5nn0v69dgz9g5rpy4yd0aw9iww1ms98rrmqnv6l46y";
+       };
+    });
+
     jruby = lib.overrideDerivation pkgs.jruby (a: rec {
        version = "1.7.23";
        name = "jruby-${version}";
